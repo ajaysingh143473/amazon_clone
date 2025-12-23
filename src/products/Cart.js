@@ -32,7 +32,7 @@ function Cart(){
 
     const updateProductData = async(apiData) =>{
         try {
-            let apiResponse = await axios.put("https://dummyjson.com/carts/1",apiData);
+            await axios.put("https://dummyjson.com/carts/1",apiData);
         } catch (ex) {
             toast.error(ex.message);
         }
@@ -162,7 +162,7 @@ function Cart(){
                 }
 
                 try {
-                    let apiResponse = await axios.post("https://api.softwareschool.co/payments/order-success", orderSuccessApiData);
+                    await axios.post("https://api.softwareschool.co/payments/order-success", orderSuccessApiData);
                     alert("Payment Success.")
                 } catch (err) {
                     toast.error(err.message);
@@ -187,7 +187,7 @@ function Cart(){
                 }
 
                 try {
-                    let apiResponse = await axios.post("https://api.softwareschool.co/payments/order-failed", orderFailedApiData);
+                    await axios.post("https://api.softwareschool.co/payments/order-failed", orderFailedApiData);
                     alert("Payment Failed.")
                 } catch (err) {
                     toast.error(err.message);
