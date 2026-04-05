@@ -3,6 +3,7 @@ import amazonlogo from "../images/amazonLogo.png";
 import { checkUserLoginStatus } from "../utils/utils";
 import { useState } from "react";
 import { searchSuggetionApi } from "../services/searchService";
+import { toast, ToastContainer } from "react-toastify";
 
 function NavBar() {
   const [isUserLoggedin, setIsUserLoggedin] = useState(checkUserLoginStatus());
@@ -33,6 +34,7 @@ function NavBar() {
         setShowSearchDropdown(true);
       } catch (error) {
         alert("unable to process your request dude");
+        toast.error("currently facing backend server issue");
       }
       
     }
@@ -83,7 +85,7 @@ function NavBar() {
                 <li><hr className="dropdown-divider"/></li>
                 <li><a className="dropdown-item" href="/">Separated link</a></li>
               </ul>
-              <input type="text" className="form-control" onChange={e => searchHandler(e)}  />
+              <input type="text" className="form-control" onChange={e => searchHandler(e)} placeholder="search for iphone or oneplus to get suggestions" />
               <button className="btn btn-outline-secondary " type="button"  ><i className="bi bi-search"></i></button>
               { showSearchDropdown === true && 
                 <div className="dropdown-search shadow">
@@ -107,9 +109,12 @@ function NavBar() {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/pricing" className="nav-link">
-                    Pricing
+                  {isUserLoggedin === true && 
+                  <Link to="/cart" className="nav-link">
+                    Show Cart
                   </Link>
+                  }
+                  
                 </li>
                 <li className="nav-item">
                   <Link to="/contact" className="nav-link">
@@ -170,6 +175,7 @@ function NavBar() {
             </div>
           </div>
         </div>
+        <ToastContainer />
     </nav>
   );
 }
