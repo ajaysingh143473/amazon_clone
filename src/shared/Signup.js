@@ -54,22 +54,24 @@ function Signup(){
 
         setSignupErrors({...tempErrors});
 
-        try {
-            let apiResponse = await signupApi({ ...signupData });
+        if(!hasErrors){
+            try {
+                let apiResponse = await signupApi({ ...signupData });
 
-            if (apiResponse.data.result === "success") {
-                localStorage.setItem("userData", JSON.stringify(apiResponse.data.data));
-                window.location = "/";
-            } else {
+                if (apiResponse.data.result === "success") {
+                    localStorage.setItem("userData", JSON.stringify(apiResponse.data.data));
+                    window.location = "/";
+                } else {
+                    setSignupErrors({ ...tempErrors, api_error: true });
+                }
+
+            } catch (err) {
+                console.log(err);
+
+                // handle API / CORS / network error
                 setSignupErrors({ ...tempErrors, api_error: true });
+                toast.error("API error from backend");
             }
-
-        } catch (err) {
-            console.log(err);
-
-            // handle API / CORS / network error
-            setSignupErrors({ ...tempErrors, api_error: true });
-            toast.error("API error from backend");
         }
 
 
