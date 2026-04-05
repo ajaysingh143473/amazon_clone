@@ -4,16 +4,19 @@ import amazonlogo from '../images/amazonLogo.png';
 import { isEmailValid } from '../utils/utils';
 import { signinApi } from '../services/authService';
 import { ERROR_MESSAGES } from '../constants/errors';
+import { toast } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 
 function Login() {
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [loginErrors, setLoginErrors] = useState({ email: false, password: false, apiError: false });
 
 
-  let hasErrors = false;
-  let tempErrors = { ...loginErrors };
-
   const handleLogin = async () => {
+
+    let hasErrors = false;
+    let tempErrors = { ...loginErrors };
+
     if (isEmailValid(loginData.email) === false) {
       hasErrors = true;
       tempErrors = { ...tempErrors, email: true };
@@ -38,8 +41,21 @@ function Login() {
           window.location ='/';
         }
       } catch (error) {
-        setLoginErrors({ ...tempErrors, apiError: true });
-      }
+
+          // ❌ Network / CORS error
+          if (!error.response) {
+            toast.error("Network error / CORS issue. Please try again later.");
+          }
+
+          else if (error.response.status === 400) {
+            setLoginErrors({ ...tempErrors, apiError: true });
+          }
+
+          // ⚠️ Other errors
+          else {
+            toast.error("Something went wrong. Please try again.");
+          }
+        }
     }
   };
 
@@ -127,6 +143,7 @@ function Login() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -4,11 +4,12 @@ import { signupApi } from '../services/authService';
 import { isEmailValid } from '../utils/utils';
 import { ERROR_MESSAGES } from '../constants/errors';
 import { Link } from 'react-router-dom';
+import { toast,ToastContainer } from 'react-toastify';
 
 function Signup(){
 
     const [signupData, setSignupData] = useState({name:'',email:'',password:''});
-    const [signupErrors, setSignupErrors] = useState({name:false, email:false, password:false});
+    const [signupErrors, setSignupErrors] = useState({name:false, email:false, password:false,api_error:false});
 
     const nameUpdate = (e) => {
         setSignupData( {...signupData, name: e.target.value});
@@ -53,13 +54,22 @@ function Signup(){
 
         setSignupErrors({...tempErrors});
 
-        if(hasErrors === false){
-            let apiResponse = await signupApi({...signupData});
+        try {
+            let apiResponse = await signupApi({ ...signupData });
 
-            if( apiResponse.data.result === "success"){
+            if (apiResponse.data.result === "success") {
                 localStorage.setItem("userData", JSON.stringify(apiResponse.data.data));
                 window.location = "/";
-            }     
+            } else {
+                setSignupErrors({ ...tempErrors, api_error: true });
+            }
+
+        } catch (err) {
+            console.log(err);
+
+            // handle API / CORS / network error
+            setSignupErrors({ ...tempErrors, api_error: true });
+            toast.error("API error from backend");
         }
 
 
@@ -122,6 +132,7 @@ return(
                     </div>
                 </div>
             </div>
+            <ToastContainer/>
         </div>
     )
 }
